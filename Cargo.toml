@@ -1,0 +1,22 @@
+[package]
+authors = ["Yagiz Degirmenci <yagizcanilbey1903@gmail.com>"]
+edition = "2018"
+name = "ortoml"
+version = "0.1.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde_json = "*"
+toml = "0.5"
+
+[lib]
+crate-type = ["cdylib"]
+name = "ortoml"
+
+[dependencies.pyo3]
+version = "0.13.1"
+
+[features]
+default = ["extension-module"]
+extension-module = ["pyo3/extension-module"]

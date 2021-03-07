@@ -1,0 +1,7 @@
+[dependencies]
+a = "123"
+b = 3
+c = true
+
+[naber]
+abi = 123

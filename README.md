@@ -13,6 +13,6 @@ cargo t --no-default-features
 * [ ] Add support for `ortoml.dump`
 * [x] Add support for `ortoml.dumps`
 * [ ] Add support for `ortoml.load`
-* [ ] Add support for `ortoml.loads`
+* [x] Add support for `ortoml.loads`
 * [x] Add support for `ortoml.from_json`
 * [x] Add support for `ortoml.to_json`

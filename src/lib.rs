@@ -41,12 +41,14 @@ fn loads(s: &str) -> PyResult<pyo3::PyObject> {
     let gil = Python::acquire_gil();
     let py = gil.python();
 
-    let r: HashMap<String, toml::Value> = toml::de::from_str(s).unwrap();
-    println!("{:?}", r);
+    let r = convert_to_json(toml::de::from_str(s).unwrap());
 
-    let dict = pyo3::types::PyDict::new(py);
-    dict.set_item("abc", "abc");
-    Ok(PyObject::from(dict))
+    let v = serde_json::to_string(&r).unwrap();
+
+    let orjson = PyModule::import(py, "orjson")?;
+    let dict = orjson.call1("loads", (v,))?;
+
+    Ok(FromPyObject::extract(dict)?)
 }
 
 #[pyfunction]

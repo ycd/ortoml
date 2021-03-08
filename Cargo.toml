@@ -20,3 +20,6 @@ version = "0.13.1"
 [features]
 default = ["extension-module"]
 extension-module = ["pyo3/extension-module"]
+
+[package.metadata.maturin]
+requires-dist = ["orjson==3.5.1"]

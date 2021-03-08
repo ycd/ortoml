@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, str::from_utf8};
 
 use pyo3::wrap_pyfunction;
 use pyo3::{prelude::*, types};
@@ -16,15 +16,24 @@ fn ortoml(py: Python, m: &PyModule) -> PyResult<()> {
 
 // Converts dictionary to YAML.
 #[pyfunction]
-fn dumps(dict: &pyo3::types::PyDict) {
-    // let value = toml::Value = convert_pydict_to_toml(dict);
-    for (k, v) in dict.iter() {
-        convert_pydict_to_toml(&k);
-        convert_pydict_to_toml(&v);
-    }
-}
+fn dumps(dict: &pyo3::types::PyDict) -> PyResult<String> {
+    let gil = Python::acquire_gil();
+    let py = gil.python();
+    let orjson = PyModule::import(py, "orjson").unwrap();
 
-fn convert_pydict_to_toml(py_val: &PyAny) {}
+    let dict_string = orjson.call1("dumps", (dict,))?.str()?.to_str()?.as_bytes();
+
+    // This is used to convert python's b'' to => "".
+    // TODO(ycd): find something more safe(i think it is safe enough) but quite sure not the best practice though.
+    let ss = std::str::from_utf8(&dict_string[2..dict_string.iter().count() - 1])?;
+
+    let toml_str: toml::Value = match serde_json::from_str(&ss) {
+        Ok(v) => v,
+        Err(why) => panic!("an error occured: {}", why),
+    };
+
+    Ok(toml_str.to_string())
+}
 
 // Converts TOML object to dictionary.
 #[pyfunction]
